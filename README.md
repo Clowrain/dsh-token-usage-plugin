@@ -67,7 +67,7 @@ curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plu
   <img src="assess/qq-qun.png" alt="QQ交流群" width="220" />
 </div>
 
-脚本会依次执行：`dsh plugin --profile web add`（默认从 **GitHub tarball** 安装——npm registry 上存在他人同名包 `dsh-balance-plugin@0.1.0`，默认走 tarball 可避免装错包）→ 幂等追加用户层 patch `~/.dsh/cordis.patch.yml` → 提示重启 DeepSeek Harness。
+脚本会依次执行：`dsh plugin --profile web add`（默认使用 pnpm 的 **`github:Francis-Xavier-code/dsh-balance-plugin`** 协议——git clone + pack，哈希稳定，重装/换机不会报完整性错误；GitHub 动态 tarball 会触发 `ERR_PNPM_TARBALL_INTEGRITY`，仅作最后兜底。默认不走 npm registry：其上存在他人同名包 `dsh-balance-plugin@0.1.0`，可避免装错包）→ 幂等追加用户层 patch `~/.dsh/cordis.patch.yml` → 提示重启 DeepSeek Harness。
 
 - 指定 profile：`DSH_PROFILE=<name>`（默认 `web`）
 - 显式从 registry 安装（如未来发布 scoped 包后）：`PKG=@Francis-Xavier-code/dsh-balance-plugin curl -fsSL ... | bash`

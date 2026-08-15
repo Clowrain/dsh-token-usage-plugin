@@ -3,13 +3,14 @@
 # 用法:
 #   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/install.sh | bash
 # 可选: 指定 profile（默认 web）: DSH_PROFILE=tui curl -fsSL ... | bash
-# 可选: 显式指定 registry 包（默认走 GitHub tarball，避免与 npm 上同名包混淆）:
+# 可选: 显式指定 registry 包（默认走 github: 协议，避免与 npm 上同名包混淆）:
 #   PKG=@Francis-Xavier-code/dsh-balance-plugin curl -fsSL ... | bash
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:$PATH"
 
 PKG="${PKG:-}"
+GITHUB_SRC="github:Francis-Xavier-code/dsh-balance-plugin"
 TARBALL="https://github.com/Francis-Xavier-code/dsh-balance-plugin/archive/refs/heads/main.tar.gz"
 PROFILE="${DSH_PROFILE:-web}"
 PATCH="$HOME/.dsh/cordis.patch.yml"
@@ -30,18 +31,32 @@ ensureInstalled() {
   return 1
 }
 
-if [ -n "$PKG" ]; then
-  echo "→ 安装 $PKG 到 profile: $PROFILE"
-  if ! dsh plugin --profile "$PROFILE" add "$PKG" 2>/dev/null; then
-    echo "→ registry 安装失败，改用 GitHub tarball"
-    if ! dsh plugin --profile "$PROFILE" add "$TARBALL"; then
-      ensureInstalled || exit 1
-    fi
-  fi
+# 已安装则跳过（幂等，避免重复解析触发校验问题）
+if grep -q '"dsh-balance-plugin"' "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null; then
+  echo "→ 依赖已存在于 profile: $PROFILE，跳过安装"
 else
-  echo "→ 从 GitHub tarball 安装到 profile: $PROFILE"
-  if ! dsh plugin --profile "$PROFILE" add "$TARBALL"; then
-    ensureInstalled || exit 1
+  tryAdd() {
+    if ! dsh plugin --profile "$PROFILE" add "$1" 2>/dev/null; then
+      ensureInstalled
+    fi
+  }
+  if [ -n "$PKG" ]; then
+    echo "→ 从 registry 安装 $PKG 到 profile: $PROFILE"
+    if ! tryAdd "$PKG"; then
+      echo "→ registry 安装失败，改用 github: 协议"
+      if ! tryAdd "$GITHUB_SRC"; then
+        echo "→ github: 安装失败，改用 GitHub tarball 兜底"
+        tryAdd "$TARBALL" || exit 1
+      fi
+    fi
+  else
+    # 默认 github: 协议（git clone + pack，哈希稳定）；
+    # GitHub archive tarball 为动态生成，pnpm 会报 ERR_PNPM_TARBALL_INTEGRITY，仅作最后兜底。
+    echo "→ 从 github: 协议安装到 profile: $PROFILE"
+    if ! tryAdd "$GITHUB_SRC"; then
+      echo "→ github: 安装失败，改用 GitHub tarball 兜底"
+      tryAdd "$TARBALL" || exit 1
+    fi
   fi
 fi
 
