@@ -61,7 +61,11 @@ curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plu
 curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash
 ```
 
-脚本会依次执行：`dsh plugin --profile web add`（npm registry 未发布时自动改用 GitHub tarball）→ 幂等追加用户层 patch `~/.dsh/cordis.patch.yml` → 提示重启 DeepSeek Harness。可用 `DSH_PROFILE=<name>` 指定 profile。
+脚本会依次执行：`dsh plugin --profile web add`（默认从 **GitHub tarball** 安装——npm registry 上存在他人同名包 `dsh-balance-plugin@0.1.0`，默认走 tarball 可避免装错包）→ 幂等追加用户层 patch `~/.dsh/cordis.patch.yml` → 提示重启 DeepSeek Harness。
+
+- 指定 profile：`DSH_PROFILE=<name>`（默认 `web`）
+- 显式从 registry 安装（如未来发布 scoped 包后）：`PKG=@Francis-Xavier-code/dsh-balance-plugin curl -fsSL ... | bash`
+- 脚本已容错 pnpm 的 build-scripts 策略提示（`ERR_PNPM_IGNORED_BUILDS`）：以依赖是否写入 profile 为准，不因噪音退出
 
 ### 方式一：会话内激活（动态插件）
 
