@@ -1,5 +1,5 @@
 return {
-  inject: ['timer', 'webServer', 'clientModules'],
+  inject: ['timer', 'webServer', 'clientModules', 'credentials'],
   apply(ctx) {
     const shell = ctx.get('shell')
     const BALANCE_URL = 'https://api.deepseek.com/user/balance'
