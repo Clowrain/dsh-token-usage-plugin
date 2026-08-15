@@ -33,7 +33,7 @@ ensureInstalled() {
 
 # 已安装则跳过（幂等，避免重复解析触发校验问题）
 if grep -q '"dsh-balance-plugin"' "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null; then
-  echo "→ 依赖已存在于 profile: $PROFILE，跳过安装"
+  echo "→ 依赖已存在于 profile: ${PROFILE}，跳过安装"
 else
   tryAdd() {
     if ! dsh plugin --profile "$PROFILE" add "$1" 2>/dev/null; then
