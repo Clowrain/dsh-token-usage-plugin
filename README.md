@@ -56,11 +56,13 @@
 ```bash
 # 安装（自动：装依赖 → 写组合 patch → 提示重启）
 curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/install.sh | bash
-
+```
+```bash
 # 卸载（移除依赖 + 清理组合 patch）
 curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash
 ```
-
+## QQ交流群
+![qq](/assess/qq-qun.png)
 脚本会依次执行：`dsh plugin --profile web add`（默认从 **GitHub tarball** 安装——npm registry 上存在他人同名包 `dsh-balance-plugin@0.1.0`，默认走 tarball 可避免装错包）→ 幂等追加用户层 patch `~/.dsh/cordis.patch.yml` → 提示重启 DeepSeek Harness。
 
 - 指定 profile：`DSH_PROFILE=<name>`（默认 `web`）
