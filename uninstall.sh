@@ -46,7 +46,7 @@ PY
   if [ -f "$PATCH" ]; then
     echo "→ 已从 $PATCH 移除插件块"
   else
-    echo "→ 已移除 $PATCH（无剩余 patch 条目，删除文件）"
+    echo "→ 已移除 ${PATCH}（无剩余 patch 条目，删除文件）"
   fi
 fi
 
