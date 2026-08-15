@@ -51,9 +51,21 @@
 - （可选）一个 DeepSeek API Key —— 可在 [platform.deepseek.com](https://platform.deepseek.com) 获取；
   若本机 DSH 已配置过 `DEEPSEEK_API_KEY` 凭据（环境变量或凭据文件），插件启动时会**自动读取，无需任何手动输入**
 
-### 方式一：会话内激活（动态插件，推荐）
+### 方式零：一键远程安装（推荐）
 
-本插件当前形态是 DSH 的**会话级动态 Cordis 插件**：无需安装 npm 包、无需改配置文件，在任意会话中让 Agent 加载源码并激活即可。
+```bash
+# 安装（自动：装依赖 → 写组合 patch → 提示重启）
+curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/install.sh | bash
+
+# 卸载（移除依赖 + 清理组合 patch）
+curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash
+```
+
+脚本会依次执行：`dsh plugin --profile web add`（npm registry 未发布时自动改用 GitHub tarball）→ 幂等追加用户层 patch `~/.dsh/cordis.patch.yml` → 提示重启 DeepSeek Harness。可用 `DSH_PROFILE=<name>` 指定 profile。
+
+### 方式一：会话内激活（动态插件）
+
+本插件同时提供 DSH 的**会话级动态 Cordis 插件**形态（仓库根 `host.js` / `client.js`）：无需安装 npm 包、无需改配置文件，在任意会话中让 Agent 加载源码并激活即可。
 
 **Step 1** —— 打开一个 DSH 会话
 
