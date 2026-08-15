@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # dsh-balance-plugin 一键远程安装脚本
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/v1.0.0/install.sh | bash
 # 可选: 指定 profile（默认 web）: DSH_PROFILE=tui curl -fsSL ... | bash
 # 可选: 显式指定 registry 包（默认走 github: 协议，避免与 npm 上同名包混淆）:
 #   PKG=@Francis-Xavier-code/dsh-balance-plugin curl -fsSL ... | bash
@@ -70,4 +70,4 @@ fi
 
 echo "✔ 安装完成！请重启 DeepSeek Harness 生效。"
 echo "  验证组合: dsh --profile $PROFILE --dump-config | grep dsh-balance-plugin"
-echo "  卸载: curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash"
+echo "  卸载: curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/v1.0.0/uninstall.sh | bash"

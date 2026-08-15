@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # dsh-balance-plugin 卸载脚本
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/v1.0.0/uninstall.sh | bash
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:$PATH"

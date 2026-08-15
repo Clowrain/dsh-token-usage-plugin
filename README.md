@@ -53,7 +53,7 @@
 
 ```bash
 # 安装（自动：装依赖 → 写组合 patch → 提示重启）
-curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/v1.0.0/install.sh | bash
 ```
 
 安装完成后**重启 DeepSeek Harness**，输入框右侧出现三个图标按钮即生效。可用 `DSH_PROFILE=<name>` 指定其他 profile。
@@ -108,7 +108,7 @@ dsh plugin --profile web add github:Francis-Xavier-code/dsh-balance-plugin
 
 ```bash
 # 一键卸载（移除依赖 + 清理组合 patch）
-curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/v1.0.0/uninstall.sh | bash
 ```
 
 手动等效：
