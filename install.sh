@@ -65,10 +65,15 @@ else
   fi
 fi
 
-# 幂等追加用户层组合 patch（name 用包内 name 字段：dsh-balance-plugin）
+# 幂等写入用户层组合 patch（name 用包内 name 字段：dsh-balance-plugin）
+# 文件必须是合法的顶层 YAML 数组：不存在/损坏（仅注释或空）时整体重写，
+# 已是数组时追加（若尚缺本插件块）。
 mkdir -p "$(dirname "$PATCH")"
 touch "$PATCH"
-if ! grep -q "dsh-balance-plugin" "$PATCH"; then
+if ! grep -qE '^\s*- insert:' "$PATCH"; then
+  printf -- "# 用户层插件组合 patch（DSH 组合时应用）\n- insert:\n    - id: dsh-balance-plugin\n      name: 'dsh-balance-plugin'\n" > "$PATCH"
+  echo "→ 已重建组合 patch: $PATCH"
+elif ! grep -q "dsh-balance-plugin" "$PATCH"; then
   printf -- "- insert:\n    - id: dsh-balance-plugin\n      name: 'dsh-balance-plugin'\n" >> "$PATCH"
   echo "→ 已写入组合 patch: $PATCH"
 fi
