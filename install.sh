@@ -65,18 +65,11 @@ else
   fi
 fi
 
-# 幂等写入用户层组合 patch（name 用包内 name 字段：dsh-balance-plugin）
-# 文件必须是合法的顶层 YAML 数组：不存在/损坏（仅注释或空）时整体重写，
-# 已是数组时追加（若尚缺本插件块）。
-mkdir -p "$(dirname "$PATCH")"
-touch "$PATCH"
-if ! grep -qE '^\s*- insert:' "$PATCH"; then
-  printf -- "# 用户层插件组合 patch（DSH 组合时应用）\n- insert:\n    - id: dsh-balance-plugin\n      name: 'dsh-balance-plugin'\n" > "$PATCH"
-  echo "→ 已重建组合 patch: $PATCH"
-elif ! grep -q "dsh-balance-plugin" "$PATCH"; then
-  printf -- "- insert:\n    - id: dsh-balance-plugin\n      name: 'dsh-balance-plugin'\n" >> "$PATCH"
-  echo "→ 已写入组合 patch: $PATCH"
-fi
+# 注意：不要再把插件写进 ~/.dsh/cordis.patch.yml 的 insert 块。
+# `dsh plugin add` 已经把插件加入 profile 的 dsh.bundles（单一注册源）。
+# 若在 patch.yml 再 insert 同一个 id，DSH 组合时会报
+# "duplicate loader entry id: dsh-balance-plugin" 导致 Host 启动崩溃。
+# 故这里仅校验 profile 已含本插件，不再额外写入 patch。
 
 echo "✔ 安装完成！请重启 DeepSeek Harness 生效。"
 echo "  验证组合: dsh --profile $PROFILE --dump-config | grep dsh-balance-plugin"
