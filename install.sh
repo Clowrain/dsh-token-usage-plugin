@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # dsh-balance-plugin 一键远程安装脚本
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/v1.0.0/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/install.sh | bash
 # 可选: 指定 profile（默认 web）: DSH_PROFILE=tui curl -fsSL ... | bash
 # 可选: 显式指定 registry 包（默认走 github: 协议，避免与 npm 上同名包混淆）:
 #   PKG=@Francis-Xavier-code/dsh-balance-plugin curl -fsSL ... | bash
@@ -10,6 +10,7 @@ set -euo pipefail
 export PATH="$HOME/.local/bin:$PATH"
 
 PKG="${PKG:-}"
+UPDATE="${UPDATE:-0}"
 GITHUB_SRC="github:Francis-Xavier-code/dsh-balance-plugin"
 TARBALL="https://github.com/Francis-Xavier-code/dsh-balance-plugin/archive/refs/heads/main.tar.gz"
 PROFILE="${DSH_PROFILE:-web}"
@@ -31,9 +32,13 @@ ensureInstalled() {
   return 1
 }
 
-# 已安装则跳过（幂等，避免重复解析触发校验问题）
-if grep -q '"dsh-balance-plugin"' "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null; then
-  echo "→ 依赖已存在于 profile: ${PROFILE}，跳过安装"
+# 强制更新：先移除旧依赖再重装；否则已安装则跳过（幂等）
+if [ "$UPDATE" = "1" ]; then
+  echo "→ UPDATE=1：先移除旧依赖"
+  dsh plugin --profile "$PROFILE" rm dsh-balance-plugin 2>/dev/null || true
+fi
+if grep -q '"dsh-balance-plugin"' "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null && [ "$UPDATE" != "1" ]; then
+  echo "→ 依赖已存在于 profile: ${PROFILE}，跳过安装（更新代码请用 UPDATE=1）"
 else
   tryAdd() {
     if ! dsh plugin --profile "$PROFILE" add "$1" 2>/dev/null; then
@@ -70,4 +75,4 @@ fi
 
 echo "✔ 安装完成！请重启 DeepSeek Harness 生效。"
 echo "  验证组合: dsh --profile $PROFILE --dump-config | grep dsh-balance-plugin"
-echo "  卸载: curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/v1.0.0/uninstall.sh | bash"
+echo "  卸载: curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash"
