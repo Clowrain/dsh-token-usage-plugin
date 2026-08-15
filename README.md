@@ -73,22 +73,33 @@ Agent 会自动完成 `cordis_define` → `cordis_run` 流程。
 
 > 手动方式：也可直接在会话中通过 `cordis_define` 工具填入 `host.js` / `client.js` 的内容（两个文件都是完整的 Cordis Plugin 函数体），再 `cordis_run`。
 
-### 方式二：dsh 命令行（规划中）
+### 方式二：dsh 命令行（标准静态插件包）
 
-DSH CLI 原生支持插件管理（转发 pnpm 到 profile 目录）：
+本仓库同时提供**标准 npm 包形态**（`lib/` 静态双面插件）：Host 端为 ESM cordis 插件（`lib/index.js`，RPC 走 `ctx.webServer` 的 `/bmon/api/*` 路由），Client 端为 ModuleLoader bundle（`lib/client.js`），通过 `dsh.bundle.patch` + `dsh.client` 声明接入。
 
-```bash
-dsh plugin --profile web add <package>
-```
-
-但该命令要求插件是**标准 npm 包形态**（`main` 导出 Host 插件 + `exports["./client"]` 导出 Client 插件 + `dsh.client.platform: "web"` 声明 + `cordis.patch.yml` 注册进 profile 组合）。当前仓库是**动态插件形态**（依赖动态运行器的 `harness` builtin），直接安装会缺少该运行时；需先完成**静态化改造**（将 `harness.handle` 迁移到 `ctx.webServer` 路由、`harness.registerTool` 迁移到 `ctx.tools`、客户端 `host.call` 迁移到 HTTP 路由），并发布为 npm 包后方可支持：
+**Step 1** —— 安装依赖（二选一）：
 
 ```bash
-# 改造并发布后：
+# 已发布到 npm：
 dsh plugin --profile web add dsh-balance-plugin
+
+# 或本地开发安装：
+dsh plugin --profile web add link:<仓库路径>
 ```
 
-静态化改造已列入路线图，欢迎 PR。
+**Step 2** —— 将插件行加入用户层组合 patch（追加到 `~/.dsh/cordis.patch.yml`）：
+
+```yaml
+- insert:
+    - id: dsh-balance-plugin
+      name: 'dsh-balance-plugin'
+```
+
+**Step 3** —— 重启 DeepSeek Harness。
+
+**Step 4** —— 验证：输入框右侧出现三个图标按钮即生效；也可用 `dsh --profile web --dump-config` 检查组合树中是否包含 `dsh-balance-plugin`。
+
+> 注意：静态版与动态版（方式一）同时存在会出现两套 UI。推荐二选一：用静态版时先在会话中 `cordis_undefine` 移除动态版。
 
 ---
 
@@ -187,7 +198,7 @@ A：检查面板中的错误提示：未配置 Key（`未配置 API Key`）、�
 A：插件启动时扫描近 90 天会话事件；「首 token 平均」仅统计插件运行后实时捕获的流式数据（历史日志不回溯 token 级事件）。
 
 **Q：可以用 `dsh plugin add` 安装吗？**
-A：DSH CLI 支持该命令，但要求插件是标准 npm 包形态；本仓库当前为动态插件形态，静态化改造完成后即可支持（见[安装](#-安装)方式二）。
+A：可以。仓库同时提供标准静态插件包形态（`lib/`），按[安装](#-安装)方式二执行：`dsh plugin --profile web add dsh-balance-plugin` + 用户层 patch 一行 + 重启 DSH。
 
 ---
 
