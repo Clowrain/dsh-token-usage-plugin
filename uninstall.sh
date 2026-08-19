@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# dsh-balance-plugin 卸载脚本
+# dsh-token-usage-plugin 卸载脚本
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/<your-fork>/dsh-token-usage-plugin/main/uninstall.sh | bash
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:$PATH"
@@ -11,9 +11,9 @@ PATCH="$HOME/.dsh/cordis.patch.yml"
 
 if command -v dsh >/dev/null 2>&1; then
   echo "→ 从 profile 移除依赖: $PROFILE"
-  dsh plugin --profile "$PROFILE" rm dsh-balance-plugin 2>/dev/null || true
+  dsh plugin --profile "$PROFILE" rm dsh-token-usage-plugin 2>/dev/null || true
 else
-  echo "! 未找到 dsh 命令，跳过依赖移除（如有需要请手动执行: dsh plugin --profile $PROFILE rm dsh-balance-plugin）"
+  echo "! 未找到 dsh 命令，跳过依赖移除（如有需要请手动执行: dsh plugin --profile $PROFILE rm dsh-token-usage-plugin）"
 fi
 
 # 从用户层 patch 中移除本插件块（幂等）；移除后若不再包含任何 patch 条目
@@ -32,7 +32,7 @@ i = 0
 while i < len(lines):
     if lines[i].strip() == "- insert:":
         block = lines[i:i + 3]
-        if any("dsh-balance-plugin" in (l or "") for l in block):
+        if any("dsh-token-usage-plugin" in (l or "") for l in block):
             i += 3
             continue
     out.append(lines[i])

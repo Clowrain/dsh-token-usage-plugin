@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# dsh-balance-plugin 一键远程安装脚本
+# dsh-token-usage-plugin 一键远程安装脚本
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/<your-fork>/dsh-token-usage-plugin/main/install.sh | bash
 # 可选: 指定 profile（默认 web）: DSH_PROFILE=tui curl -fsSL ... | bash
 # 可选: 显式指定 registry 包（默认走 github: 协议，避免与 npm 上同名包混淆）:
-#   PKG=@Francis-Xavier-code/dsh-balance-plugin curl -fsSL ... | bash
+#   PKG=@<your-fork>/dsh-token-usage-plugin curl -fsSL ... | bash
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:$PATH"
 
 PKG="${PKG:-}"
 UPDATE="${UPDATE:-0}"
-GITHUB_SRC="github:Francis-Xavier-code/dsh-balance-plugin"
-TARBALL="https://github.com/Francis-Xavier-code/dsh-balance-plugin/archive/refs/heads/main.tar.gz"
+GITHUB_SRC="github:<your-fork>/dsh-token-usage-plugin"
+TARBALL="https://github.com/<your-fork>/dsh-token-usage-plugin/archive/refs/heads/main.tar.gz"
 PROFILE="${DSH_PROFILE:-web}"
 PATCH="$HOME/.dsh/cordis.patch.yml"
 
@@ -24,7 +24,7 @@ fi
 # pnpm 可能因 build-scripts 策略（ERR_PNPM_IGNORED_BUILDS）返回非零但安装已成功；
 # 以 profile package.json 是否写入依赖为准判定。
 ensureInstalled() {
-  if grep -q "dsh-balance-plugin" "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null; then
+  if grep -q "dsh-token-usage-plugin" "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null; then
     echo "! pnpm 提示非零退出（build scripts 策略），但依赖已写入，继续"
     return 0
   fi
@@ -35,9 +35,9 @@ ensureInstalled() {
 # 强制更新：先移除旧依赖再重装；否则已安装则跳过（幂等）
 if [ "$UPDATE" = "1" ]; then
   echo "→ UPDATE=1：先移除旧依赖"
-  dsh plugin --profile "$PROFILE" rm dsh-balance-plugin 2>/dev/null || true
+  dsh plugin --profile "$PROFILE" rm dsh-token-usage-plugin 2>/dev/null || true
 fi
-if grep -q '"dsh-balance-plugin"' "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null && [ "$UPDATE" != "1" ]; then
+if grep -q '"dsh-token-usage-plugin"' "$HOME/.dsh/profiles/$PROFILE/package.json" 2>/dev/null && [ "$UPDATE" != "1" ]; then
   echo "→ 依赖已存在于 profile: ${PROFILE}，跳过安装（更新代码请用 UPDATE=1）"
 else
   tryAdd() {
@@ -68,9 +68,9 @@ fi
 # 注意：不要再把插件写进 ~/.dsh/cordis.patch.yml 的 insert 块。
 # `dsh plugin add` 已经把插件加入 profile 的 dsh.bundles（单一注册源）。
 # 若在 patch.yml 再 insert 同一个 id，DSH 组合时会报
-# "duplicate loader entry id: dsh-balance-plugin" 导致 Host 启动崩溃。
+# "duplicate loader entry id: dsh-token-usage-plugin" 导致 Host 启动崩溃。
 # 故这里仅校验 profile 已含本插件，不再额外写入 patch。
 
 echo "✔ 安装完成！请重启 DeepSeek Harness 生效。"
-echo "  验证组合: dsh --profile $PROFILE --dump-config | grep dsh-balance-plugin"
-echo "  卸载: curl -fsSL https://raw.githubusercontent.com/Francis-Xavier-code/dsh-balance-plugin/main/uninstall.sh | bash"
+echo "  验证组合: dsh --profile $PROFILE --dump-config | grep dsh-token-usage-plugin"
+echo "  卸载: curl -fsSL https://raw.githubusercontent.com/<your-fork>/dsh-token-usage-plugin/main/uninstall.sh | bash"
