@@ -1,6 +1,6 @@
 {
   "name": "dsh-token-usage-plugin",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "DSH Token 用量统计（DSH 插件）：Miyu 风格用量瓦片 / GitHub 贡献图风格用量日历 / 趋势柱状图 / 模型消耗环形图与明细表 / 最近 50 条调用记录，深浅色主题自适应",
   "type": "module",
   "main": "lib/index.js",
