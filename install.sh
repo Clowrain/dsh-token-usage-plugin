@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 # dsh-token-usage-plugin 一键远程安装脚本
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/<your-fork>/dsh-token-usage-plugin/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Clowrain/dsh-token-usage-plugin/main/install.sh | bash
 # 可选: 指定 profile（默认 web）: DSH_PROFILE=tui curl -fsSL ... | bash
 # 可选: 显式指定 registry 包（默认走 github: 协议，避免与 npm 上同名包混淆）:
-#   PKG=@<your-fork>/dsh-token-usage-plugin curl -fsSL ... | bash
+#   PKG=@Clowrain/dsh-token-usage-plugin curl -fsSL ... | bash
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:$PATH"
 
 PKG="${PKG:-}"
 UPDATE="${UPDATE:-0}"
-GITHUB_SRC="github:<your-fork>/dsh-token-usage-plugin"
-TARBALL="https://github.com/<your-fork>/dsh-token-usage-plugin/archive/refs/heads/main.tar.gz"
+GITHUB_SRC="github:Clowrain/dsh-token-usage-plugin"
+TARBALL="https://github.com/Clowrain/dsh-token-usage-plugin/archive/refs/heads/main.tar.gz"
 PROFILE="${DSH_PROFILE:-web}"
 PATCH="$HOME/.dsh/cordis.patch.yml"
 
@@ -73,4 +73,4 @@ fi
 
 echo "✔ 安装完成！请重启 DeepSeek Harness 生效。"
 echo "  验证组合: dsh --profile $PROFILE --dump-config | grep dsh-token-usage-plugin"
-echo "  卸载: curl -fsSL https://raw.githubusercontent.com/<your-fork>/dsh-token-usage-plugin/main/uninstall.sh | bash"
+echo "  卸载: curl -fsSL https://raw.githubusercontent.com/Clowrain/dsh-token-usage-plugin/main/uninstall.sh | bash"

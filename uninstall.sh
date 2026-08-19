@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # dsh-token-usage-plugin 卸载脚本
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/<your-fork>/dsh-token-usage-plugin/main/uninstall.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Clowrain/dsh-token-usage-plugin/main/uninstall.sh | bash
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:$PATH"
