@@ -1,11 +1,15 @@
 {
   "name": "dsh-token-usage-plugin",
-  "version": "3.7.3",
-  "description": "DSH Token 用量统计（DSH 插件）：Miyu 风格用量瓦片 / GitHub 贡献图风格用量日历 / 趋势柱状图 / 模型消耗环形图与明细表 / 最近 50 条调用记录，深浅色主题自适应",
+  "version": "3.8.0",
+  "description": "DSH Token 用量统计（DSH 插件）：Miyu 风格用量瓦片 / GitHub 贡献图风格用量日历 / 趋势柱状图 / 模型消耗环形图与明细表 / 金额估算，深浅色主题自适应，TypeScript 工程化",
   "type": "module",
   "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
   "exports": {
-    ".": "./lib/index.js",
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
     "./client": "./lib/client.js",
     "./package.json": "./package.json"
   },
@@ -20,8 +24,19 @@
   },
   "files": [
     "lib",
-    "cordis.patch.yml"
+    "src",
+    "scripts",
+    "cordis.patch.yml",
+    "tsconfig.host.json",
+    "tsconfig.client.json"
   ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "clean": "node -e \"require('node:fs').rmSync('lib',{recursive:true,force:true})\"",
+    "typecheck": "tsc -p tsconfig.host.json --noEmit && tsc -p tsconfig.client.json --noEmit",
+    "verify": "node scripts/verify.mjs",
+    "prepare": "node scripts/build.mjs"
+  },
   "license": "MIT",
   "keywords": [
     "deepseek-harness",
@@ -30,5 +45,18 @@
     "plugin",
     "token",
     "usage"
-  ]
+  ],
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-client-runtime": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-slots": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-host-webserver": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-session": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-session-query": "0.1.0-rc.8",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
 }
